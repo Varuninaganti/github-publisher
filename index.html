@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Check List</title>
+    <meta name="description" content="A premium, interactive travel checklist designed with a clean, light editorial theme, customizable categories, and multi-trip management.">
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Light Warm Editorial Palette (Default) */
+            --bg-gradient-start: #faf9f6;
+            --bg-gradient-end: #eae5da; /* Deeper cream for better card contrast */
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-bg-subtle: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(94, 109, 97, 0.24); /* Increased opacity and tint for clearly defined borders */
+            --text-primary: #2d2f31;
+            --text-secondary: #6e6d6a; /* Darker secondary text for readability */
+            --accent-glow: rgba(118, 136, 122, 0.12);
+
+            --primary: #5e6d61; /* Rich Sage Green */
+            --primary-hover: #49554b;
+            --secondary: #6c7d8a; /* Slate Blue */
+            --success: #7f8e80; /* Olive Green */
+            --success-glow: rgba(127, 142, 128, 0.18);
+            --danger: #b87e74; /* Terracotta */
+
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Plus Jakarta Sans', sans-serif;
+
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+
+            --shadow-sm: 0 4px 12px rgba(94, 109, 97, 0.08), 0 1px 3px rgba(0,0,0,0.02);
+            --shadow-md: 0 12px 30px -8px rgba(94, 109, 97, 0.16), 0 2px 6px rgba(0,0,0,0.03);
+            --shadow-lg: 0 20px 40px -12px rgba(94, 109, 97, 0.24), 0 4px 12px rgba(0,0,0,0.04);
+
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dark Mode overrides - Blue Slate (Indigo & Cyan) */
+        body.dark-theme {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #020617;
+            --card-bg: rgba(30, 41, 59, 0.45);
+            --card-bg-subtle: rgba(15, 23, 42, 0.45);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+
+            --primary: #6366f1; /* Indigo */
+            --primary-hover: #4f46e5;
+            --secondary: #06b6d4; /* Cyan */
+            --success: #10b981; /* Emerald */
+            --success-glow: rgba(16, 185, 129, 0.2);
+            --danger: #f43f5e;
+
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 12px 30px -8px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .theme-toggle-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 0.6rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        body.dark-theme h1 {
+            background: linear-gradient(to right, #a5b4fc, #818cf8, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Unified Checklists Grid Dashboard */
+        .checklists-dashboard-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .checklists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 0.75rem;
+        }
+
+        .trip-card {
+            background: var(--card-bg-subtle);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.75rem;
+            backdrop-filter: blur(8px);
+            min-height: 140px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .trip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .trip-card.spiti::before {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+        }
+
+        .trip-card.universal::before {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .trip-card.custom::before {
+            background: linear-gradient(to right, var(--success), #a8bda7);
+        }
+
+        .trip-card.scratch::before {
+            background: linear-gradient(to right, #a3a29f, #c7c6c3);
+        }
+
+        .trip-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .trip-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--accent-glow), inset 0 0 0 1.5px var(--primary);
+            background: var(--accent-glow);
+        }
+
+        /* Flexbox card layout with no overlap */
+        .trip-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .trip-type-badge {
+            font-size: 0.675rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .trip-name {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            word-break: break-word;
+            line-height: 1.3;
+            margin-top: 0.25rem;
+        }
+
+        .trip-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            opacity: 0.5;
+            transition: var(--transition-smooth);
+            flex-shrink: 0;
+        }
+
+        .trip-card:hover .trip-card-actions,
+        .trip-card.active .trip-card-actions {
+            opacity: 1;
+        }
+
+        .trip-card-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trip-card-btn:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-theme .trip-card-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .trip-card-btn.delete:hover {
+            color: var(--danger);
+            background: rgba(204, 152, 142, 0.15);
+        }
+
+        body.dark-theme .trip-card-btn.delete:hover {
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        .trip-card-meta {
+            font-size: 0.775rem;
+            color: var(--text-secondary);
+        }
+
+        /* Dashboard / Global Stats */
+        .dashboard {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 9999px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body.dark-theme .progress-bar-container {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 9999px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.03);
+            border-color: var(--text-secondary);
+        }
+
+        body.dark-theme .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Categories Section */
+        .categories-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .category-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background: rgba(0, 0, 0, 0.005);
+        }
+
+        .category-title-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .cat-icon {
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+
+        .category-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .category-count {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--text-secondary);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        body.dark-theme .category-count {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .category-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .category-chevron {
+            color: var(--text-secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .category-card.collapsed .category-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .category-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: max-height 0.3s ease-out;
+            max-height: 1200px;
+            overflow: hidden;
+        }
+
+        .category-card.collapsed .category-content {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            pointer-events: none;
+        }
+
+        /* Checklist Items */
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            background: rgba(0, 0, 0, 0.012);
+            border: 1px solid rgba(0, 0, 0, 0.015);
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        body.dark-theme .item-row {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .item-row:hover {
+            background: rgba(0, 0, 0, 0.025);
+            border-color: var(--card-border);
+            transform: translateX(4px);
+        }
+
+        body.dark-theme .item-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-grow: 1;
+        }
+
+        /* Styled Checkbox */
+        .checkbox-wrapper {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrapper input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: transparent;
+            border: 2px solid var(--text-secondary);
+            border-radius: 6px;
+            transition: var(--transition-smooth);
+        }
+
+        .checkbox-wrapper input:checked ~ .checkmark {
+            background-color: var(--success);
+            border-color: var(--success);
+            box-shadow: 0 0 8px var(--success-glow);
+        }
+
+        .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-wrapper input:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        .item-text {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            font-weight: 500;
+        }
+
+        .item-row.checked .item-text {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            opacity: 0.75;
+        }
+
+        /* Delete Buttons */
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            opacity: 0.6;
+            padding: 0.35rem;
+            border-radius: 6px;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-row:hover .delete-btn,
+        .category-header:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            color: var(--danger);
+            background: rgba(204, 152, 142, 0.15);
+        }
+
+        body.dark-theme .delete-btn:hover {
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        /* Form for adding items */
+        .add-item-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .input-text {
+            flex-grow: 1;
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            padding: 0.6rem 1rem;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        body.dark-theme .input-text {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .input-text:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .creator-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .creator-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            body {
+                padding: 1rem 0.5rem;
+            }
+            .dashboard {
+                padding: 1rem;
+            }
+            .controls {
+                flex-wrap: wrap;
+            }
+            .controls button {
+                flex-grow: 1;
+            }
+            .delete-btn {
+                opacity: 0.8;
+            }
+            .checklists-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print styling */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0;
+            }
+            /* Hide non-printable controls, dashboard grid, and creator elements */
+            .theme-toggle-btn, .checklists-dashboard-card, .creator-section, .controls, .add-item-form, .delete-btn {
+                display: none !important;
+            }
+            /* Print the active checklist container only */
+            .container {
+                display: block !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .category-card {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                background: none !important;
+                page-break-inside: avoid;
+                margin-bottom: 1.5rem;
+                display: block !important;
+            }
+            /* Force-expand collapsed categories in print */
+            .category-card.collapsed .category-content {
+                max-height: none !important;
+                padding: 1.5rem !important;
+                pointer-events: auto !important;
+            }
+            .category-card.collapsed .category-chevron {
+                display: none !important;
+            }
+            .category-chevron {
+                display: none !important;
+            }
+            .category-content {
+                max-height: none !important;
+                padding: 1rem !important;
+                padding: 1.5rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .item-row {
+                background: none !important;
+                border: none !important;
+                border-bottom: 1px solid #eee !important;
+                transform: none !important;
+                display: flex !important;
+                padding: 0.5rem 1rem !important;
+            }
+            .item-row:last-child {
+                border-bottom: none !important;
+            }
+            .checkmark {
+                border: 1.5px solid #000 !important;
+                border: 2px solid #000 !important;
+                background-color: transparent !important;
+            }
+            /* Force checkbox checkmark to be black on white paper */
+            .checkbox-wrapper input:checked ~ .checkmark::after {
+                border-color: #000 !important;
+            }
+            .item-text {
+                color: #000 !important;
+            }
+            .item-row.checked .item-text {
+                text-decoration: line-through !important;
+                color: #666 !important;
+                opacity: 0.7 !important;
+            }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+
+<div class="container">
+    <header>
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle dark and light theme">
+            <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Switched by JS -->
+            </svg>
+        </button>
+        <h1>Travel Check List</h1>
+        <p class="subtitle">Multi-Trip Packing Planner</p>
+    </header>
+
+    <!-- Unified Dashboard Checklists Grid -->
+    <div class="checklists-dashboard-card">
+        <h2 class="creator-title" style="margin-bottom: 0.5rem;">Your Travel Checklists & Templates</h2>
+        <div class="checklists-grid" id="checklistsGrid">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <!-- Global Progress Dashboard -->
+    <div class="dashboard">
+        <div class="stats-header">
+            <span class="stats-title" id="activeTripNameDisplay">Packing Progress</span>
+            <span id="progressPercent" style="font-weight: 700; color: var(--primary)">0%</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <span class="subtitle" id="progressCount">0 of 0 items packed</span>
+            <div class="controls">
+                <button class="btn btn-outline" id="resetBtn" title="Reset all checked items in this trip">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M16 3h5v5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 21H3v-5"></path></svg>
+                    Reset Checks
+                </button>
+                <button class="btn btn-outline" id="resetAllBtn" title="Reset all saved trips back to defaults" style="border-color: rgba(204,152,142,0.3); color: var(--danger)">
+                    Reset Factory Data
+                </button>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>
+                    Print List
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Custom Category -->
+    <div class="creator-section">
+        <h2 class="creator-title">Add Custom Category</h2>
+        <form class="add-item-form" id="newCategoryForm">
+            <input type="text" class="input-text" id="newCategoryInput" placeholder="Category name (e.g., Cold weather gear, Snacks)..." required>
+            <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
+    </div>
+
+    <!-- Main Categories list -->
+    <div class="categories-grid" id="checklistContainer">
+        <!-- Rendered by JS -->
+    </div>
+
+    <footer>
+        <p>Pack light. Travel far. Live fully.</p>
+    </footer>
+</div>
+
+<script>
+    // Templates definitions
+    const spitiTemplate = [
+        {
+            category: "Jackets & Warm Layers",
+            items: [
+                { id: "s1_1", text: "1 heavy winter jacket/puffer", checked: false },
+                { id: "s1_2", text: "1 fleece or hoodie", checked: false },
+                { id: "s1_3", text: "2–3 full-sleeve t-shirts/thermals", checked: false },
+                { id: "s1_4", text: "2 light sweaters or sweatshirts", checked: false },
+                { id: "s1_5", text: "1 windproof jacket (very useful on bikes/open vehicles)", checked: false }
+            ]
+        },
+        {
+            category: "Bottom Wear",
+            items: [
+                { id: "s2_1", text: "2 jeans (your black + blue jeans are fine)", checked: false },
+                { id: "s2_2", text: "1 comfortable trek/jogger pant", checked: false },
+                { id: "s2_3", text: "Thermal lower (for night)", checked: false }
+            ]
+        },
+        {
+            category: "Innerwear",
+            items: [
+                { id: "s3_1", text: "5–6 pairs underwear", checked: false },
+                { id: "s3_2", text: "4–5 pairs socks", checked: false },
+                { id: "s3_3", text: "1–2 woolen socks", checked: false }
+            ]
+        },
+        {
+            category: "Accessories",
+            items: [
+                { id: "s4_1", text: "Woolen cap/beanie", checked: false },
+                { id: "s4_2", text: "Sunglasses (very important due to snow glare)", checked: false },
+                { id: "s4_3", text: "Muffler/neck gaiter", checked: false },
+                { id: "s4_4", text: "Gloves", checked: false },
+                { id: "s4_5", text: "Cap/hat for daytime", checked: false }
+            ]
+        },
+        {
+            category: "Footwear",
+            items: [
+                { id: "s5_1", text: "Comfortable sports shoes/trekking shoes", checked: false },
+                { id: "s5_2", text: "Slippers/crocs for hotel stays", checked: false }
+            ]
+        },
+        {
+            category: "Essentials & Toiletries",
+            items: [
+                { id: "s6_1", text: "Toothbrush & toothpaste", checked: false },
+                { id: "s6_2", text: "Face wash", checked: false },
+                { id: "s6_3", text: "Moisturizer (Spiti air is very dry)", checked: false },
+                { id: "s6_4", text: "Lip balm", checked: false },
+                { id: "s6_5", text: "Sunscreen SPF 50+", checked: false },
+                { id: "s6_6", text: "Wet wipes/tissues", checked: false },
+                { id: "s6_7", text: "Deodorant", checked: false }
+            ]
+        },
+        {
+            category: "Medicines",
+            items: [
+                { id: "s7_1", text: "Personal medicines", checked: false },
+                { id: "s7_2", text: "Diamox (only after checking suitability)", checked: false },
+                { id: "s7_3", text: "Paracetamol", checked: false },
+                { id: "s7_4", text: "Motion sickness tablets", checked: false },
+                { id: "s7_5", text: "ORS packets", checked: false },
+                { id: "s7_6", text: "Band-aids", checked: false },
+                { id: "s7_7", text: "Pain relief spray", checked: false }
+            ]
+        },
+        {
+            category: "Gadgets",
+            items: [
+                { id: "s8_1", text: "Phone charger", checked: false },
+                { id: "s8_2", text: "Power bank", checked: false },
+                { id: "s8_3", text: "Camera + batteries", checked: false },
+                { id: "s8_4", text: "Extra memory cards", checked: false },
+                { id: "s8_5", text: "Car charger", checked: false },
+                { id: "s8_6", text: "Earphones/speaker for road trip", checked: false }
+            ]
+        },
+        {
+            category: "Documents",
+            items: [
+                { id: "s9_1", text: "Government ID proof", checked: false },
+                { id: "s9_2", text: "Driving license (if driving)", checked: false },
+                { id: "s9_3", text: "Hotel/package details", checked: false },
+                { id: "s9_4", text: "Some cash (ATMs can be unreliable)", checked: false }
+            ]
+        },
+        {
+            category: "Snacks for Road Trips",
+            items: [
+                { id: "s10_1", text: "Chocolates", checked: false },
+                { id: "s10_2", text: "Dry fruits", checked: false },
+                { id: "s10_3", text: "Energy bars", checked: false },
+                { id: "s10_4", text: "Chips/biscuits", checked: false },
+                { id: "s10_5", text: "Water bottle/thermos", checked: false }
+            ]
+        }
+    ];
+
+    const universalTemplate = [
+        {
+            category: "Clothing",
+            items: [
+                { id: "u1_1", text: "T-shirts & shirts", checked: false },
+                { id: "u1_2", text: "Pants & shorts", checked: false },
+                { id: "u1_3", text: "Underwear & socks", checked: false },
+                { id: "u1_4", text: "Sleepwear", checked: false },
+                { id: "u1_5", text: "Light jacket or sweater", checked: false }
+            ]
+        },
+        {
+            category: "Toiletries",
+            items: [
+                { id: "u2_1", text: "Toothbrush & toothpaste", checked: false },
+                { id: "u2_2", text: "Shampoo & Body wash", checked: false },
+                { id: "u2_3", text: "Deodorant", checked: false },
+                { id: "u2_4", text: "Sunscreen", checked: false },
+                { id: "u2_5", text: "Comb / Hairbrush", checked: false }
+            ]
+        },
+        {
+            category: "Electronics",
+            items: [
+                { id: "u3_1", text: "Phone & charger", checked: false },
+                { id: "u3_2", text: "Headphones", checked: false },
+                { id: "u3_3", text: "Power bank", checked: false },
+                { id: "u3_4", text: "Travel adapter", checked: false }
+            ]
+        },
+        {
+            category: "Documents & Essentials",
+            items: [
+                { id: "u4_1", text: "Passport / ID card", checked: false },
+                { id: "u4_2", text: "Wallet (Cash & Cards)", checked: false },
+                { id: "u4_3", text: "Booking confirmations", checked: false },
+                { id: "u4_4", text: "House keys / car keys", checked: false }
+            ]
+        },
+        {
+            category: "Health & First Aid",
+            items: [
+                { id: "u5_1", text: "Personal medicines", checked: false },
+                { id: "u5_2", text: "Pain relievers", checked: false },
+                { id: "u5_3", text: "Band-aids", checked: false },
+                { id: "u5_4", text: "Hand sanitizer", checked: false }
+            ]
+        }
+    ];
+
+    let savedTrips = [];
+    let activeTripId = '';
+
+    const defaultSpiti = {
+        id: 'trip-spiti',
+        name: 'Spiti Valley Adventure',
+        type: 'spiti',
+        isDefault: true,
+        checklistData: JSON.parse(JSON.stringify(spitiTemplate))
+    };
+
+    const defaultUniversal = {
+        id: 'trip-universal',
+        name: 'Travel Check List',
+        type: 'universal',
+        isDefault: true,
+        checklistData: JSON.parse(JSON.stringify(universalTemplate))
+    };
+
+    // Load from local storage or default to default lists
+    function loadData() {
+        const storedTrips = localStorage.getItem('savedTravelTrips');
+        const storedActiveId = localStorage.getItem('activeTravelTripId');
+
+        if (storedTrips) {
+            savedTrips = JSON.parse(storedTrips);
+        } else {
+            savedTrips = [
+                JSON.parse(JSON.stringify(defaultUniversal)),
+                JSON.parse(JSON.stringify(defaultSpiti))
+            ];
+        }
+
+        // Ensure Spiti & Universal default templates exist at the front in the correct order
+        let spitiTrip = savedTrips.find(t => t.id === 'trip-spiti') || JSON.parse(JSON.stringify(defaultSpiti));
+        let universalTrip = savedTrips.find(t => t.id === 'trip-universal') || JSON.parse(JSON.stringify(defaultUniversal));
+
+        // Filter out if they exist elsewhere to avoid duplicates
+        savedTrips = savedTrips.filter(t => t.id !== 'trip-spiti' && t.id !== 'trip-universal');
+
+        // Prepend Universal first, then Spiti
+        savedTrips.unshift(universalTrip, spitiTrip);
+
+        // Choose active trip ID
+        if (storedActiveId && savedTrips.some(t => t.id === storedActiveId)) {
+            activeTripId = storedActiveId;
+        } else {
+            activeTripId = 'trip-universal';
+        }
+
+        saveData();
+    }
+
+    function saveData() {
+        localStorage.setItem('savedTravelTrips', JSON.stringify(savedTrips));
+        localStorage.setItem('activeTravelTripId', activeTripId);
+        updateProgress();
+        updateTripNameDisplay();
+    }
+
+    function updateTripNameDisplay() {
+        const activeTrip = savedTrips.find(t => t.id === activeTripId);
+        if (activeTrip) {
+            document.getElementById('activeTripNameDisplay').innerText = `${activeTrip.name} Packing Progress`;
+        }
+    }
+
+    // Map keywords to Lucide Travel SVG Icons
+    function getCategoryIcon(name) {
+        const n = name.toLowerCase();
+        let iconColor = 'var(--primary)';
+
+        if (n.includes('jacket') || n.includes('layers') || n.includes('warm') || n.includes('clothing') || n.includes('wear') || n.includes('innerwear')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 7.57l-1-1.07-4.38 4.38a3.1 3.1 0 0 0 0 4.41L12.59 17a3.1 3.1 0 0 0 4.41 0L21.38 12.6l-1.07-1.08 4.11-4.38Z"></path><path d="M6 18h2v4H6z"></path><path d="M10 14h2v8h-2z"></path><path d="M14 10h2v12h-2z"></path></svg>`;
+        }
+        if (n.includes('toiletries') || n.includes('toilet') || n.includes('essentials')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22h6c1.2 0 2-1 2-2V8c0-1.2-1-2-2-2h-1V3c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3H6c-1.1 0-2 .9-2 2v12c0 1 1 2 2 2z"></path><path d="M10 6h4"></path></svg>`;
+        }
+        if (n.includes('gadgets') || n.includes('electronics') || n.includes('tech')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="20" x2="18" y2="20"></line><path d="M12 17v-4"></path><path d="M17 12h.01"></path></svg>`;
+        }
+        if (n.includes('documents') || n.includes('id') || n.includes('ticket')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`;
+        }
+        if (n.includes('medicines') || n.includes('first aid') || n.includes('health') || n.includes('medical')) {
+            iconColor = 'var(--danger)';
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>`;
+        }
+        if (n.includes('footwear') || n.includes('shoes') || n.includes('socks')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V11.5A2.5 2.5 0 0 1 7.5 9h3A2.5 2.5 0 0 1 13 11.5V21"></path><path d="M13 15h4.5a2.5 2.5 0 0 1 2.5 2.5V21"></path></svg>`;
+        }
+        if (n.includes('snack') || n.includes('food') || n.includes('drink')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>`;
+        }
+        if (n.includes('accessories') || n.includes('cap') || n.includes('glasses') || n.includes('gloves')) {
+            return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="12" r="3"></circle><path d="M9 12h6"></path><path d="M3 12h1c.6 0 1-.4 1-1V9a2 2 0 0 1 4 0v2c0 .6.4 1 1 1"></path><path d="M21 12h-1c-.6 0-1-.4-1-1V9a2 2 0 0 0-4 0v2c0 .6-.4 1-1 1"></path></svg>`;
+        }
+
+        // Default custom trip package box icon
+        return `<svg class="cat-icon" style="color: ${iconColor}" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"></path></svg>`;
+    }
+
+    // Render unified dashboard checklists grid
+    function renderChecklistsGrid() {
+        const container = document.getElementById('checklistsGrid');
+        container.innerHTML = '';
+
+        savedTrips.forEach(trip => {
+            const isActive = trip.id === activeTripId;
+            const isDefault = trip.isDefault;
+
+            let typeLabel = 'Custom Checklist';
+            let badgeColor = 'var(--success)';
+            let cardClass = 'custom';
+            let illustrationHTML = '';
+
+            if (trip.type === 'spiti') {
+                typeLabel = 'Adventure Template';
+                badgeColor = 'var(--secondary)';
+                cardClass = 'spiti';
+                illustrationHTML = `
+                    <svg class="trip-card-illustration" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary); margin-bottom: 0.15rem;">
+                        <path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+                        <path d="M4.14 15.08c2.62-1.57 5.24-1.43 7.86.42 2.74 1.94 5.48 2 8.22.18"></path>
+                    </svg>
+                `;
+            } else if (trip.type === 'universal' && isDefault) {
+                typeLabel = 'Travel Template';
+                badgeColor = 'var(--primary)';
+                cardClass = 'universal';
+                illustrationHTML = `
+                    <svg class="trip-card-illustration" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); margin-bottom: 0.15rem;">
+                        <rect x="3" y="8" width="18" height="12" rx="2"></rect>
+                        <path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"></path>
+                        <path d="M3 13h18"></path>
+                    </svg>
+                `;
+            } else {
+                illustrationHTML = `
+                    <svg class="trip-card-illustration" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success); margin-bottom: 0.15rem;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                    </svg>
+                `;
+            }
+
+            const card = document.createElement('div');
+            card.className = `trip-card ${cardClass} ${isActive ? 'active' : ''}`;
+
+            const totalItems = trip.checklistData.reduce((acc, cat) => acc + cat.items.length, 0);
+            const checkedItems = trip.checklistData.reduce((acc, cat) => acc + cat.items.filter(i => i.checked).length, 0);
+
+            let actionsHTML = '';
+            if (!isDefault) {
+                actionsHTML = `
+                    <div class="trip-card-actions">
+                        <button class="trip-card-btn rename-trip-btn" aria-label="Rename trip" title="Rename trip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path>
+                            </svg>
+                        </button>
+                        <button class="trip-card-btn delete delete-trip-btn" aria-label="Delete trip" title="Delete trip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="trip-card-header">
+                    <div style="display: flex; flex-direction: column; gap: 0.15rem; flex-grow: 1; min-width: 0;">
+                        <span class="trip-type-badge" style="color: ${badgeColor}">${typeLabel}</span>
+                        <span class="trip-name">${escapeHTML(trip.name)}</span>
+                    </div>
+                    ${actionsHTML}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <span class="trip-card-meta">${checkedItems} of ${totalItems} packed</span>
+                    ${illustrationHTML}
+                </div>
+            `;
+
+            // Click behavior
+            card.addEventListener('click', (e) => {
+                // Rename button
+                if (e.target.closest('.rename-trip-btn')) {
+                    e.stopPropagation();
+                    const newName = prompt(`Enter a new name for "${trip.name}":`, trip.name);
+                    if (newName && newName.trim() !== '') {
+                        trip.name = newName.trim();
+                        saveData();
+                        renderChecklistsGrid();
+                    }
+                    return;
+                }
+
+                // Delete button
+                if (e.target.closest('.delete-trip-btn')) {
+                    e.stopPropagation();
+                    if (confirm(`Are you sure you want to delete the custom checklist "${trip.name}"? This action cannot be undone.`)) {
+                        savedTrips = savedTrips.filter(t => t.id !== trip.id);
+                        if (activeTripId === trip.id) {
+                            activeTripId = savedTrips[0].id;
+                        }
+                        saveData();
+                        renderChecklistsGrid();
+                        renderChecklist();
+                    }
+                    return;
+                }
+
+                // Switch active trip
+                activeTripId = trip.id;
+                saveData();
+
+                const cards = container.querySelectorAll('.trip-card');
+                cards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+
+                renderChecklist();
+            });
+
+            container.appendChild(card);
+        });
+
+        // "+ Create Custom Trip" card at the end of the grid
+        const scratchCard = document.createElement('div');
+        scratchCard.className = 'trip-card scratch';
+        scratchCard.innerHTML = `
+            <div class="trip-card-header">
+                <div style="display: flex; flex-direction: column; gap: 0.15rem; flex-grow: 1;">
+                    <span class="trip-type-badge" style="color: var(--text-secondary)">New Trip</span>
+                    <span class="trip-name" style="color: var(--primary)">+ Create Custom Trip</span>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <span class="trip-card-meta">Preloaded with Travel defaults.</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); opacity: 0.7;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+            </div>
+        `;
+
+        scratchCard.addEventListener('click', () => {
+            createNewTripFromScratch();
+        });
+
+        container.appendChild(scratchCard);
+    }
+
+    // Load templates into the currently selected active trip
+    window.loadTemplateIntoActive = function(templateType) {
+        const activeTrip = savedTrips.find(t => t.id === activeTripId);
+        if (!activeTrip) return;
+
+        const templateName = templateType === 'spiti' ? 'Spiti Valley Adventure' : 'Travel Check List';
+        const templateData = templateType === 'spiti' ? spitiTemplate : universalTemplate;
+
+        const confirmMsg = `Are you sure you want to load the "${templateName}" template into your active trip "${activeTrip.name}"? This will overwrite your current checklist items.`;
+        if (confirm(confirmMsg)) {
+            activeTrip.checklistData = JSON.parse(JSON.stringify(templateData));
+            saveData();
+            renderChecklistsGrid();
+            renderChecklist();
+        }
+    };
+
+    // Instantiate a new custom trip preloaded with Universal Travel template
+    window.createNewTripFromScratch = function() {
+        const name = prompt("Enter a name for your new trip checklist (e.g., 'Summer Vacation 2026'):");
+        if (!name || name.trim() === '') return;
+
+        const newId = 'trip-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const newTrip = {
+            id: newId,
+            name: name.trim(),
+            checklistData: JSON.parse(JSON.stringify(universalTemplate)),
+            isDefault: false
+        };
+
+        savedTrips.push(newTrip);
+        activeTripId = newId;
+        saveData();
+        renderChecklistsGrid();
+        renderChecklist();
+    };
+
+    // Render active category/items grid
+    function renderChecklist() {
+        const container = document.getElementById('checklistContainer');
+        container.innerHTML = '';
+
+        const activeTrip = savedTrips.find(t => t.id === activeTripId);
+        if (!activeTrip) return;
+
+        const checklistData = activeTrip.checklistData;
+
+        checklistData.forEach((cat, catIndex) => {
+            const checkedCount = cat.items.filter(item => item.checked).length;
+            const totalCount = cat.items.length;
+
+            const card = document.createElement('div');
+            card.className = 'category-card';
+            if (cat.collapsed) {
+                card.classList.add('collapsed');
+            }
+
+            const catIcon = getCategoryIcon(cat.category);
+
+            // Category Header
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerHTML = `
+                <div class="category-title-area">
+                    ${catIcon}
+                    <span class="category-title" title="${escapeHTML(cat.category)}">${escapeHTML(cat.category)}</span>
+                    <span class="category-count">${checkedCount}/${totalCount}</span>
+                </div>
+                <div class="category-actions">
+                    <button class="delete-btn delete-category-btn" aria-label="Delete category and all its items" title="Delete category">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                    <svg class="category-chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                </div>
+            `;
+
+            // Collapse click handler
+            header.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-category-btn')) {
+                    e.stopPropagation();
+                    const confirmMsg = `Are you sure you want to delete the entire category "${cat.category}" and all of its ${totalCount} items?`;
+                    if (totalCount === 0 || confirm(confirmMsg)) {
+                        checklistData.splice(catIndex, 1);
+                        saveData();
+                        renderChecklistsGrid();
+                        renderChecklist();
+                    }
+                    return;
+                }
+
+                card.classList.toggle('collapsed');
+                cat.collapsed = card.classList.contains('collapsed');
+                saveData();
+            });
+
+            // Category Content
+            const content = document.createElement('div');
+            content.className = 'category-content';
+
+            // Items list
+            cat.items.forEach((item, itemIndex) => {
+                const row = document.createElement('div');
+                row.className = `item-row ${item.checked ? 'checked' : ''}`;
+                row.innerHTML = `
+                    <div class="item-left">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" ${item.checked ? 'checked' : ''}>
+                            <span class="checkmark"></span>
+                        </label>
+                        <span class="item-text">${escapeHTML(item.text)}</span>
+                    </div>
+                    <button class="delete-btn delete-item-btn" aria-label="Delete item" title="Delete item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                `;
+
+                row.addEventListener('click', (e) => {
+                    if (e.target.closest('.delete-item-btn')) {
+                        cat.items.splice(itemIndex, 1);
+                        saveData();
+                        renderChecklistsGrid();
+                        renderChecklist();
+                    } else {
+                        item.checked = !item.checked;
+                        saveData();
+                        renderChecklistsGrid();
+                        renderChecklist();
+                        return;
+                    }
+
+                    // Prevent browser double-triggering when clicking checkbox elements directly
+                    if (e.target.closest('.checkbox-wrapper')) {
+                        e.preventDefault();
+                    }
+
+                    item.checked = !item.checked;
+                    saveData();
+                    renderChecklistsGrid();
+                    renderChecklist();
+                });
+
+                content.appendChild(row);
+            });
+
+            // Add custom item form
+            const addForm = document.createElement('form');
+            addForm.className = 'add-item-form';
+            addForm.innerHTML = `
+                <input type="text" class="input-text" placeholder="Add custom item..." required>
+                <button type="submit" class="btn btn-outline" style="padding: 0.6rem 1rem">Add</button>
+            `;
+            addForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = addForm.querySelector('input');
+                const text = input.value.trim();
+                if (text) {
+                    cat.items.push({
+                        id: 'custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                        text: text,
+                        checked: false
+                    });
+                    saveData();
+                    renderChecklistsGrid();
+                    renderChecklist();
+                }
+            });
+
+            content.appendChild(addForm);
+            card.appendChild(header);
+            card.appendChild(content);
+            container.appendChild(card);
+        });
+    }
+
+    // Helper to sanitize HTML inputs
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+    }
+
+    // Calculate progress and update stats bar
+    function updateProgress() {
+        let totalItems = 0;
+        let checkedItems = 0;
+
+        const activeTrip = savedTrips.find(t => t.id === activeTripId);
+        if (activeTrip) {
+            activeTrip.checklistData.forEach(cat => {
+                totalItems += cat.items.length;
+                checkedItems += cat.items.filter(item => item.checked).length;
+            });
+        }
+
+        const percent = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+
+        document.getElementById('progressBar').style.width = `${percent}%`;
+        document.getElementById('progressPercent').innerText = `${percent}%`;
+        document.getElementById('progressCount').innerText = `${checkedItems} of ${totalItems} items packed`;
+    }
+
+    // Reset only checked flags in current trip
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        const activeTrip = savedTrips.find(t => t.id === activeTripId);
+        if (activeTrip && confirm("Are you sure you want to uncheck all checklist items in this trip? Your custom items/categories will not be deleted.")) {
+            activeTrip.checklistData.forEach(cat => {
+                cat.items.forEach(item => item.checked = false);
+            });
+            saveData();
+            renderChecklistsGrid();
+            renderChecklist();
+        }
+    });
+
+    // Reset completely back to default templates
+    document.getElementById('resetAllBtn').addEventListener('click', () => {
+        if (confirm("WARNING: This will completely reset all saved trips and restore the default Spiti Valley and Travel Check List checklists. Do you want to proceed?")) {
+            localStorage.removeItem('savedTravelTrips');
+            localStorage.removeItem('activeTravelTripId');
+            loadData();
+            renderChecklistsGrid();
+            renderChecklist();
+        }
+    });
+
+    // Custom Category adding
+    document.getElementById('newCategoryForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('newCategoryInput');
+        const catName = input.value.trim();
+        const activeTrip = savedTrips.find(t => t.id === activeTripId);
+
+        if (catName && activeTrip) {
+            activeTrip.checklistData.push({
+                category: catName,
+                items: [],
+                collapsed: false
+            });
+            input.value = '';
+            saveData();
+            renderChecklistsGrid();
+            renderChecklist();
+        }
+    });
+
+    // Theme toggler logic
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+
+    // Default checklistTheme is 'dark'
+    const currentTheme = localStorage.getItem('checklistTheme') || 'dark';
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        updateThemeIcon('dark');
+    } else {
+        document.body.classList.remove('dark-theme');
+        updateThemeIcon('light');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+        localStorage.setItem('checklistTheme', theme);
+        updateThemeIcon(theme);
+    });
+
+    function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+            // Sun icon (click to switch to light)
+            themeIcon.innerHTML = `
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="m4.93 4.93 1.41 1.41"></path>
+                <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="m6.34 17.66-1.41 1.41"></path>
+                <path d="m19.07 4.93-1.41 1.41"></path>
+            `;
+        } else {
+            // Moon icon (click to switch to dark)
+            themeIcon.innerHTML = `
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            `;
+        }
+    }
+
+    // Init
+    loadData();
+    renderChecklistsGrid();
+    renderChecklist();
+</script>
+</body>
+</html>
